@@ -7,11 +7,11 @@ JavaScript library for running an autonomous, read-only community Observer and c
 | Guide | Use it for |
 | --- | --- |
 | [API reference](./API.md) | Every exported function, client method, parameter, response, fee calculation, error, live subscription, runtime control, and persistence method. |
+| [Data model](./DATA_MODEL.md) | Shared primitives, envelopes, pages, records, status, fee, wallet, contract, route, graph, and live-update structures. |
 | [Data provenance and verification](./DATA_PROVENANCE.md) | How the Observer discovers, reconstructs, verifies, and derives spores, objects, wallets, balances, tokens, transfers, contracts, fees, routes, and metrics. |
 | [Database persistence](./DATABASES.md) | MongoDB, PostgreSQL, MySQL, and MariaDB schemas, adapters, retention, projection workers, and bounded backfills. |
 | [Security](./SECURITY.md) | Trust boundaries, safe deployment requirements, input limits, endpoint exposure, and operational controls. |
 | [Contributing](./CONTRIBUTING.md) | Public protocol boundary, implementation-neutral documentation rules, protocol version references, and contribution requirements. |
-| [Publishing](./PUBLISHING.md) | Releasing the package under the `@myria-network` npm scope with provenance and access controls. |
 
 Choose a starting point:
 
@@ -37,9 +37,9 @@ Nostr / Waku / Iroh / P2P / DHT / Hyperswarm
 
 ## Repository status
 
-This repository distributes the HTTP/WebSocket client, typed catalog, database projection adapters, and runtime integration point.
+This repository distributes the Observer runtime integration point, HTTP/WebSocket client, typed catalog, and database projection adapters. It does not prescribe a frontend framework, backend web framework, cloud provider, or database.
 
-The client and database adapters work independently. `createCommunityObserver()` also needs a compatible MYRIA engine that provides cryptographic verification and discovery transports. Until that engine is publicly distributed through npm, pass its verified adapter explicitly through `engine`. Every client receives its endpoint explicitly from the integrating application.
+The client and database adapters work independently. `createCommunityObserver()` receives a compatible MYRIA protocol engine that provides cryptographic verification, storage, and discovery transports. This separation lets an operator use any frontend and backend while keeping protocol validity inside one reviewed engine. Every client receives its endpoint explicitly from the integrating application.
 
 ## SDK capabilities
 
@@ -64,13 +64,13 @@ Install directly from GitHub:
 npm install github:myria-network/Observer
 ```
 
-Node.js 24.14.0 is required. When the public engine package becomes available, it can be installed alongside this SDK. Until then, `createMyriaObserverClient()` and the database connectors are immediately usable, while a complete Observer process requires an injected engine adapter.
+Node.js 24.14.0 is required for the packaged runtime integration. Browser applications only use the client bundle. A complete Observer process requires a compatible protocol engine adapter.
 
 ## Run a community Observer
 
 ```js
 import {createCommunityObserver} from '@myria-network/observer';
-import * as engine from 'test-myria/observer'; // Compatible verified engine
+import * as engine from './myria-protocol-engine.js';
 
 const observer = await createCommunityObserver({
   home: './myria-observer-data',
@@ -91,7 +91,7 @@ process.once('SIGINT', async () => {
 });
 ```
 
-Startup installs only the public bootstrap supplied by the engine, opens stores separated by Genesis, starts discovery, and serves the API on loopback. It never creates wallets, Keepers, Scouts, or Genesis identities. Put a hardened HTTPS reverse proxy in front of any Internet-facing deployment.
+Startup installs only the public bootstrap supplied by the engine, opens stores separated by Genesis, starts discovery, and serves the API on loopback. It never creates wallets, Keepers, Scouts, or Genesis identities. Review [Security](./SECURITY.md) before exposing an API publicly.
 
 ## Consume an Observer
 
@@ -117,6 +117,20 @@ The full Observer process needs Node.js, persistent storage, and long-lived disc
 - Browser applications use `createMyriaObserverClient()` against the API of their community-managed Observer.
 - Server applications may run the Observer as a separate persistent Node.js service. Do not start it per request or inside a short-lived serverless function.
 - Backend services can use the same catalog client or project verified results into a supported database.
+
+The Observer backend and the application frontend remain separate:
+
+```text
+MYRIA protocol engine
+        ↓ verified local state
+createCommunityObserver()
+        ↓ catalog API + live updates
+your backend, reverse proxy, or application server
+        ↓
+your frontend
+```
+
+An application can serve its frontend from any stack. It only needs to provide the Observer endpoint to `createMyriaObserverClient()`. The frontend never connects directly to discovery transports, carriers, databases, or wallet homes.
 
 All view reads use `POST /observer/catalog`. Module names, parameters, and live capabilities are declared in `OBSERVER_CATALOG`, so applications do not need to construct a different URL for every view.
 

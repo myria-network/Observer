@@ -2,6 +2,8 @@
 
 `createCommunityObserver()` never consumes another Observer API. Its runtime receives discovery announcements, retrieves content from network-advertised carriers, verifies it, and generates the local results exposed through this client.
 
+See [DATA_MODEL.md](./DATA_MODEL.md) for the complete response structures and representation rules used by the methods below.
+
 ## Package exports
 
 | Export | Purpose |
@@ -279,7 +281,7 @@ const observer = await createCommunityObserver(options);
 | Option | Description |
 | --- | --- |
 | `home` | Exclusive persistent Observer directory. Required. |
-| `network` | Local network alias. Defaults to `test-myria`. |
+| `network` | Optional network alias understood by the supplied protocol engine. |
 | `port` | Loopback port. Use `0` to request a free system port. |
 | `initializePublicNetwork` | Installs public bootstrap evidence when missing. Defaults to `true`. |
 | `config` | Bounded verification, transport, and retention configuration. |

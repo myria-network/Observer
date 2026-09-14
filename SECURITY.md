@@ -11,7 +11,7 @@ An Observer is a local reader and auditor. Its results describe what that instan
 
 ## Network exposure
 
-- The server listens on loopback. Publish it through Nginx, Caddy, or an HTTPS load balancer.
+- The server listens on loopback. Expose it only through a hardened TLS-terminating application server or reverse proxy.
 - Preserve request-body limits, timeouts, WebSocket connection limits, and rate limits.
 - Do not enable global CORS. Browser applications should use the same origin or a controlled backend/reverse proxy.
 - Never turn anonymized locators into fetch destinations. Verification uses only internally admitted routes.

@@ -162,11 +162,8 @@ export function createMyriaObserverClient(options){return new MyriaObserverClien
 export async function createCommunityObserver(options){
   if(!options||typeof options.home!=='string'||!options.home.trim())throw new MyriaObserverError('OBSERVER_HOME_REQUIRED');
   const {engine:providedEngine,...observerOptions}=options;
-  let engine=providedEngine;
-  if(!engine){
-    try{engine=await import('test-myria/observer');}
-    catch(error){throw new MyriaObserverError('OBSERVER_ENGINE_UNAVAILABLE','Install a compatible MYRIA engine or pass the verified engine adapter explicitly.',{cause:error});}
-  }
+  const engine=providedEngine;
+  if(!engine)throw new MyriaObserverError('OBSERVER_ENGINE_REQUIRED','Pass a compatible MYRIA protocol engine through options.engine.');
   if(typeof engine.createCommunityObserver!=='function')throw new MyriaObserverError('OBSERVER_ENGINE_UNAVAILABLE');
   return engine.createCommunityObserver(observerOptions);
 }

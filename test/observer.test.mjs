@@ -71,6 +71,7 @@ test('community runtime delegates to an explicitly supplied verified engine',asy
   const observer=await createCommunityObserver({home:'./observer-data',port:4318,engine,config:{verify:true}});
   assert.equal(observer,expected);
   assert.deepEqual(calls,[{home:'./observer-data',port:4318,config:{verify:true}}]);
+  await assert.rejects(()=>createCommunityObserver({home:'./observer-data'}),error=>error instanceof MyriaObserverError&&error.code==='OBSERVER_ENGINE_REQUIRED');
 });
 
 test('projection worker persists bounded pages produced by its own Observer',async()=>{
@@ -101,6 +102,8 @@ test('database connectors create indexed schemas and parameterized upserts',asyn
 
 test('public API documentation covers every exported client and persistence method',async()=>{
   const api=await readFile(new URL('../API.md',import.meta.url),'utf8');
+  const readme=await readFile(new URL('../README.md',import.meta.url),'utf8');
+  const model=await readFile(new URL('../DATA_MODEL.md',import.meta.url),'utf8');
   const clientMethods=[
     'health','catalog','discoveryCapsule','socialMediaImageUrl','overview','stats','status','assets','carriers','activity','research','liveSpores','timeline',
     'spores','spore','transfers','transactionGallery','walletGallery','socialMedia','contracts','contract','objects','object','collections','collection','catalogs','catalogDetail',
@@ -113,4 +116,7 @@ test('public API documentation covers every exported client and persistence meth
   const databaseMethods=['initialize','upsertEntities','upsertRoutes','upsertEvents','insertMetric','setCheckpoint','prune','close'];
   for(const name of [...clientMethods,...packageExports,...databaseMethods])assert.match(api,new RegExp('`'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?:\\(|`)'),`API.md must document ${name}`);
   for(const topic of ['Fee-market data','Wallets, native balance, and custom tokens','Contracts, source, executions, and rewards','Collections, catalogs, and portable discovery'])assert.ok(api.includes(topic),`API.md must document ${topic}`);
+  for(const topic of ['Catalog envelope','Paginated result','Fee market','Wallet','Contracts','Routes and carriers','Method-to-result map'])assert.ok(model.includes(topic),`DATA_MODEL.md must document ${topic}`);
+  for(const text of [api,readme,model])assert.doesNotMatch(text,/SvelteKit|Amazon Web Services|\bAWS\b|\bEC2\b|CloudFront/i);
+  assert.doesNotMatch(readme,/PUBLISHING\.md|Publishing under/);
 });
