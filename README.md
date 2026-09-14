@@ -2,6 +2,25 @@
 
 JavaScript library for running an autonomous, read-only community Observer and consuming its views through a single catalog API.
 
+## Documentation
+
+| Guide | Use it for |
+| --- | --- |
+| [API reference](./API.md) | Every exported function, client method, parameter, response, fee calculation, error, live subscription, runtime control, and persistence method. |
+| [Data provenance and verification](./DATA_PROVENANCE.md) | How the Observer discovers, reconstructs, verifies, and derives spores, objects, wallets, balances, tokens, transfers, contracts, fees, routes, and metrics. |
+| [Database persistence](./DATABASES.md) | MongoDB, PostgreSQL, MySQL, and MariaDB schemas, adapters, retention, projection workers, and bounded backfills. |
+| [Security](./SECURITY.md) | Trust boundaries, safe deployment requirements, input limits, endpoint exposure, and operational controls. |
+| [Contributing](./CONTRIBUTING.md) | Public protocol boundary, implementation-neutral documentation rules, protocol version references, and contribution requirements. |
+| [Publishing](./PUBLISHING.md) | Releasing the package under the `@myria-network` npm scope with provenance and access controls. |
+
+Choose a starting point:
+
+- **Build an application:** start with [Consume an Observer](#consume-an-observer), then use the [complete API reference](./API.md#complete-client-method-reference).
+- **Understand where a value comes from:** read [Data provenance and verification](./DATA_PROVENANCE.md), including [network fee estimates](./DATA_PROVENANCE.md#network-fee-estimates).
+- **Run an Observer:** start with [Run a community Observer](#run-a-community-observer), then review [Security](./SECURITY.md).
+- **Store queryable projections:** follow [Database persistence](./DATABASES.md).
+- **Contribute protocol-facing behavior:** read [Contributing](./CONTRIBUTING.md) before changing validation or documentation.
+
 The node does not query another Observer. It listens directly to the enabled discovery transports, admits announcements under local resource limits, retrieves spores from their announced carriers, verifies the available evidence, and builds its own database. Contracts, catalogs, collections, routes, and metrics always describe what that Observer instance has observed.
 
 ```text
@@ -35,7 +54,7 @@ The client and database adapters work independently. `createCommunityObserver()`
 - Receive snapshots and ordered patches over one WebSocket connection per client.
 - Project bounded pages asynchronously into MongoDB, PostgreSQL, MySQL, or MariaDB.
 
-The complete method reference, accepted filters, fee calculation, return fields, errors, subscriptions, runtime controls, and persistence methods are documented in [API.md](./API.md).
+The complete method reference, accepted filters, fee calculation, return fields, errors, subscriptions, runtime controls, and persistence methods are documented in the [API reference](./API.md).
 
 ## Installation
 
@@ -127,4 +146,4 @@ The client maintains one Socket.IO connection per instance, validates revisions 
 
 `myria.contract(contractId)` returns source code only after the Observer has recovered a published source package and verified its `NetworkID`, `ContractID`, deployment transaction, `WasmID`, source hash, and signatures. The Observer neither compiles nor executes that JavaScript. Replaying WASM for an audit is a separate wallet-engine or specialized-tool operation.
 
-See [DATA_PROVENANCE.md](./DATA_PROVENANCE.md) for how every view is discovered, verified, and derived. See [API.md](./API.md) for every method, [SECURITY.md](./SECURITY.md) before exposing an Observer publicly, and [DATABASES.md](./DATABASES.md) to project admitted results into MongoDB, PostgreSQL, MySQL, or MariaDB through a bounded asynchronous worker. [CONTRIBUTING.md](./CONTRIBUTING.md) defines the boundary between the public protocol and implementation-specific material. Maintainers can follow [PUBLISHING.md](./PUBLISHING.md) to release the package under the `@myria-network` npm scope.
+The documentation index at the top of this page links every maintained guide in this repository.
