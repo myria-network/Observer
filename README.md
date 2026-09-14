@@ -58,11 +58,14 @@ The complete method reference, accepted filters, fee calculation, return fields,
 
 ## Installation
 
-Install directly from GitHub:
+Install the public package from npm:
 
 ```bash
-npm install github:myria-network/Observer
+npm install @myria-network/observer
 ```
+
+The current `0.x` line is a public preview. The `next` channel can be selected
+explicitly with `npm install @myria-network/observer@next`.
 
 Node.js 24.14.0 is required for the packaged runtime integration. Browser applications only use the client bundle. A complete Observer process requires a compatible protocol engine adapter.
 
