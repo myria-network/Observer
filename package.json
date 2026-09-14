@@ -7,7 +7,7 @@
   "main":"./dist/index.js",
   "types":"./dist/index.d.ts",
   "exports":{".":{"types":"./dist/index.d.ts","import":"./dist/index.js"},"./storage":{"types":"./dist/storage.d.ts","import":"./dist/storage.js"}},
-  "files":["dist","README.md","API.md","DATA_PROVENANCE.md","DATABASES.md","SECURITY.md","PUBLISHING.md","examples"],
+  "files":["dist","README.md","API.md","DATA_PROVENANCE.md","DATABASES.md","SECURITY.md","CONTRIBUTING.md","PUBLISHING.md","examples"],
   "scripts":{"build":"node build.mjs","test":"node --test test/*.test.mjs","prepare":"npm run build","prepack":"npm run build"},
   "engines":{"node":">=24.14.0 <25"},
   "license":"MIT",

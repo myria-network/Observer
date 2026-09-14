@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm} from 'node:fs/promises';
+import {mkdtemp,readFile,rm} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {
@@ -97,4 +97,20 @@ test('database connectors create indexed schemas and parameterized upserts',asyn
   const insert=pgCalls.find(call=>call.sql.startsWith('INSERT INTO'));assert.ok(insert.sql.includes('$1'));assert.equal(insert.sql.includes('DROP TABLE'),false);assert.ok(insert.values.some(value=>String(value).includes('DROP TABLE')));
 
   for(const factory of [createMysqlObserverDatabase,createMariaDbObserverDatabase]){const calls=[],sql={execute:async(statement,values)=>{calls.push({statement,values});},end:async()=>{}};const adapter=await factory({client:sql,prefix:'community'});await adapter.initialize();await adapter.insertMetric({networkId:objectId,timestamp:1,payload:{observed:1}});assert.ok(calls.some(call=>call.statement.includes('ON DUPLICATE KEY UPDATE')));}
+});
+
+test('public API documentation covers every exported client and persistence method',async()=>{
+  const api=await readFile(new URL('../API.md',import.meta.url),'utf8');
+  const clientMethods=[
+    'health','catalog','discoveryCapsule','socialMediaImageUrl','overview','stats','status','assets','carriers','activity','research','liveSpores','timeline',
+    'spores','spore','transfers','transactionGallery','walletGallery','socialMedia','contracts','contract','objects','object','collections','collection','catalogs','catalogDetail',
+    'propagations','propagation','discoveries','discovery','routes','scarce','keepers','keeper','scouts','scout','graph','wallet','subscribe','close',
+  ];
+  const packageExports=[
+    'createCommunityObserver','createMyriaObserverClient','MyriaObserverClient','MyriaObserverError','OBSERVER_MODULES','OBSERVER_CATALOG',
+    'ObserverProjectionWorker','OBSERVER_DATABASE_BLUEPRINT','observerDatabaseNames','createMongoObserverDatabase','createPostgresObserverDatabase','createMysqlObserverDatabase','createMariaDbObserverDatabase',
+  ];
+  const databaseMethods=['initialize','upsertEntities','upsertRoutes','upsertEvents','insertMetric','setCheckpoint','prune','close'];
+  for(const name of [...clientMethods,...packageExports,...databaseMethods])assert.match(api,new RegExp('`'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?:\\(|`)'),`API.md must document ${name}`);
+  for(const topic of ['Fee-market data','Wallets, native balance, and custom tokens','Contracts, source, executions, and rewards','Collections, catalogs, and portable discovery'])assert.ok(api.includes(topic),`API.md must document ${topic}`);
 });

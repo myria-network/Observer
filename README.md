@@ -22,6 +22,21 @@ This repository distributes the HTTP/WebSocket client, typed catalog, database p
 
 The client and database adapters work independently. `createCommunityObserver()` also needs a compatible MYRIA engine that provides cryptographic verification and discovery transports. Until that engine is publicly distributed through npm, pass its verified adapter explicitly through `engine`. Every client receives its endpoint explicitly from the integrating application.
 
+## SDK capabilities
+
+- Start and stop an autonomous read-only Observer through a compatible verification engine.
+- Receive announcements directly from configured discovery transports.
+- Retrieve candidate bytes from announced carriers and expose only admitted results and explicit observation states.
+- Read overview counters, worker status, transport state, activity, research data, and historical metric buckets.
+- List and inspect spores, objects, wallets, native balances, custom tokens, transfers, contracts, executions, collections, catalogs, routes, Keepers, Scouts, and social publications.
+- Read the verified fee-market snapshot and base-operation fee estimates derived from Genesis, accepted settlements, and certified Keeper offers.
+- Query content recoverability and build a bounded discovery graph.
+- Generate import capsules for verified collections and catalogs.
+- Receive snapshots and ordered patches over one WebSocket connection per client.
+- Project bounded pages asynchronously into MongoDB, PostgreSQL, MySQL, or MariaDB.
+
+The complete method reference, accepted filters, fee calculation, return fields, errors, subscriptions, runtime controls, and persistence methods are documented in [API.md](./API.md).
+
 ## Installation
 
 Install directly from GitHub:
@@ -112,4 +127,4 @@ The client maintains one Socket.IO connection per instance, validates revisions 
 
 `myria.contract(contractId)` returns source code only after the Observer has recovered a published source package and verified its `NetworkID`, `ContractID`, deployment transaction, `WasmID`, source hash, and signatures. The Observer neither compiles nor executes that JavaScript. Replaying WASM for an audit is a separate wallet-engine or specialized-tool operation.
 
-See [DATA_PROVENANCE.md](./DATA_PROVENANCE.md) for how every view is discovered, verified, and derived. See [API.md](./API.md) for every method, [SECURITY.md](./SECURITY.md) before exposing an Observer publicly, and [DATABASES.md](./DATABASES.md) to project admitted results into MongoDB, PostgreSQL, MySQL, or MariaDB through a bounded asynchronous worker. Maintainers can follow [PUBLISHING.md](./PUBLISHING.md) to release the package under the `@myria-network` npm scope.
+See [DATA_PROVENANCE.md](./DATA_PROVENANCE.md) for how every view is discovered, verified, and derived. See [API.md](./API.md) for every method, [SECURITY.md](./SECURITY.md) before exposing an Observer publicly, and [DATABASES.md](./DATABASES.md) to project admitted results into MongoDB, PostgreSQL, MySQL, or MariaDB through a bounded asynchronous worker. [CONTRIBUTING.md](./CONTRIBUTING.md) defines the boundary between the public protocol and implementation-specific material. Maintainers can follow [PUBLISHING.md](./PUBLISHING.md) to release the package under the `@myria-network` npm scope.
