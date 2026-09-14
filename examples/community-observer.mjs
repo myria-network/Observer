@@ -1,0 +1,11 @@
+import {createCommunityObserver} from '@myria-network/observer';
+
+const observer=await createCommunityObserver({
+  home:process.env.MYRIA_OBSERVER_HOME??'./myria-community-observer',
+  port:Number(process.env.PORT??4318),
+  config:{verify:true,activeChecks:true},
+});
+
+console.log(JSON.stringify({networkId:observer.networkId,url:observer.url}));
+const stop=async()=>{await observer.close();process.exit(0);};
+process.once('SIGINT',stop);process.once('SIGTERM',stop);
