@@ -26,7 +26,7 @@ Local verification store
 Catalog API + optional asynchronous database projection
 ```
 
-The Observer connects to discovery transports itself. A dashboard user never opens a discovery connection. Browser clients receive snapshots and ordered updates from the Observer's single server-side view.
+The Observer connects to discovery transports itself. API consumers receive snapshots and ordered updates from the Observer's server-side view instead of opening their own discovery connections.
 
 An announcement is only a reason to investigate. It is not proof that content exists, belongs to MYRIA, is current, or is economically valid.
 
@@ -149,7 +149,7 @@ WASM code may arrive in multiple verified `CONTRACT_CODE` objects. The detail re
 JavaScript is never reconstructed from WASM. The Observer shows source only after recovering a source package from one of these network paths:
 
 1. A verified Collection Head containing `contracts/<ContractID>.cbor`.
-2. An official carrier source index whose immutable package route matches the expected contract.
+2. A verified network carrier source index whose immutable package route matches the expected contract.
 
 The package must bind the active `NetworkID`, deployment transaction, `ContractID`, `WasmID`, source hash, compiler, build profile, and optional contract name. Byte length and transport hash are checked before the source is exposed.
 
@@ -206,7 +206,7 @@ Route processing has three separate decisions:
 
 Carrier class is derived from the verified route schema and normalized locator, not from display text. Persistent storage routes are counted separately from temporary discovery transports.
 
-The carrier catalog aggregates local route evidence by normalized origin and carrier class. It does not connect each dashboard visitor to carriers.
+The carrier catalog aggregates local route evidence by normalized origin and carrier class. Individual API clients do not establish carrier or discovery connections.
 
 ## Keepers and propagation evidence
 
@@ -217,7 +217,7 @@ A Keeper appears from verified propagation claims, publication attributions, or 
 - A Keeper binding binds a collection namespace route to a Keeper identity.
 - The reward destination is a separately bound public address when present.
 
-The Observer verifies signatures, network binding, target, and canonical locator. It then performs its own route recovery check. A signed claim proves who declared the route; it does not by itself prove availability or create a reward. The current Observer records reward candidacy evidence but does not decide or pay rewards.
+The Observer verifies signatures, network binding, target, and canonical locator. It then performs its own route recovery check. A signed claim proves who declared the route; it does not by itself prove availability or create a reward. The Observer records claim and recovery evidence; reward eligibility and payment remain protocol-level decisions outside the catalog SDK.
 
 ## Scouts and discovery claims
 
@@ -229,7 +229,7 @@ A social publication is announced through MYRIA discovery and binds a supported 
 
 The linked spore follows normal MYRIA verification. The external social host remains a presentation source, not protocol authority. Media retrieval is bounded, cached, rate limited, and performed asynchronously. A missing or deleted post removes it from the visible social wall without invalidating an independently recovered MYRIA spore.
 
-The public card exposes the social handle but omits a display name. Opening the external post requires a separate user action in the dashboard.
+Presentation layers decide how much social metadata to disclose and must require an explicit user action before navigating to an external post.
 
 ## Health and recoverability
 

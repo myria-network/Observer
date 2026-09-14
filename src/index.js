@@ -158,7 +158,7 @@ export class MyriaObserverClient{
 
 export function createMyriaObserverClient(options){return new MyriaObserverClient(options);}
 
-/** Starts the server-side, read-only Observer engine without dashboard assets. */
+/** Starts a server-side, read-only Observer through a compatible engine adapter. */
 export async function createCommunityObserver(options){
   if(!options||typeof options.home!=='string'||!options.home.trim())throw new MyriaObserverError('OBSERVER_HOME_REQUIRED');
   const {engine:providedEngine,...observerOptions}=options;

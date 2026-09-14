@@ -89,4 +89,4 @@ The returned instance exposes:
 - `submit(candidate)` to connect another public announcement transport; the candidate still passes normal admission and verification.
 - Idempotent `close()`.
 
-The runtime fixes `mutateNetwork: false` and serves no dashboard assets. It does not distribute Spore Game.
+The runtime fixes `mutateNetwork: false`. Rendering and application-specific presentation remain separate from the catalog API.

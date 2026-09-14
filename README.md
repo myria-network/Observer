@@ -1,6 +1,6 @@
 # MYRIA Observer SDK
 
-JavaScript library for running an autonomous, read-only community Observer and consuming all of its views through a single catalog API. The package contains no private keys, AWS credentials, wallet data, dashboard assets, or Spore Game code.
+JavaScript library for running an autonomous, read-only community Observer and consuming its views through a single catalog API.
 
 The node does not query another Observer. It listens directly to the enabled discovery transports, admits announcements under local resource limits, retrieves spores from their announced carriers, verifies the available evidence, and builds its own database. Contracts, catalogs, collections, routes, and metrics always describe what that Observer instance has observed.
 
@@ -13,14 +13,14 @@ Nostr / Waku / Iroh / P2P / DHT / Hyperswarm
                        ↓ verification
           Local store + HTTP/WebSocket API
                        ↓
-            React / Next / Vue / Svelte
+             Applications and services
 ```
 
 ## Repository status
 
-This repository distributes the public SDK: the HTTP/WebSocket client, typed catalog, database projection adapters, and runtime integration point. It does not include the dashboard.
+This repository distributes the HTTP/WebSocket client, typed catalog, database projection adapters, and runtime integration point.
 
-The client and database adapters work independently. `createCommunityObserver()` also needs a compatible MYRIA engine that provides cryptographic verification and discovery transports. Until that engine is publicly distributed through npm, pass its verified adapter explicitly through `engine`. The SDK never uses `observer.myria.network` as a data source.
+The client and database adapters work independently. `createCommunityObserver()` also needs a compatible MYRIA engine that provides cryptographic verification and discovery transports. Until that engine is publicly distributed through npm, pass its verified adapter explicitly through `engine`. Every client receives its endpoint explicitly from the integrating application.
 
 ## Installation
 
@@ -76,13 +76,13 @@ console.log(health.networkId, spores.total, contracts.items);
 myria.close();
 ```
 
-## Framework integration
+## Application integration
 
-The full Observer process needs Node.js, persistent storage, and long-lived discovery connections. It can serve any frontend but does not run inside a browser.
+The full Observer process needs Node.js, persistent storage, and long-lived discovery connections. It can serve any presentation layer but does not run inside a browser.
 
-- React, Vue, and Svelte applications use `createMyriaObserverClient()` against the API of their community-managed Observer.
-- A Next.js deployment can run the Observer in a separate persistent Node.js service. Do not start it per request or inside a serverless function.
-- Any backend can use the same catalog client or project verified results into a supported database.
+- Browser applications use `createMyriaObserverClient()` against the API of their community-managed Observer.
+- Server applications may run the Observer as a separate persistent Node.js service. Do not start it per request or inside a short-lived serverless function.
+- Backend services can use the same catalog client or project verified results into a supported database.
 
 All view reads use `POST /observer/catalog`. Module names, parameters, and live capabilities are declared in `OBSERVER_CATALOG`, so applications do not need to construct a different URL for every view.
 
