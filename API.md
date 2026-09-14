@@ -21,6 +21,23 @@ See [DATA_MODEL.md](./DATA_MODEL.md) for the complete response structures and re
 | `createPostgresObserverDatabase(options)` | PostgreSQL projection adapter. |
 | `createMysqlObserverDatabase(options)` | MySQL projection adapter. |
 | `createMariaDbObserverDatabase(options)` | MariaDB projection adapter. |
+| `tokenAvatarArt(assetId, symbol?)` | Produces the deterministic MYRIA Pixel Blast portrait instructions for a token. |
+| `tokenInitial(symbol?, name?)` | Produces its single-letter mark; MYR and TMYR always use `M`. |
+| `drawTokenAvatar(canvas, options)` | Draws the canonical token portrait into a browser canvas. |
+| `tokenAvatarPng(assetId, symbol?, name?)` | Returns the portrait as a cached PNG base64 data URL. |
+
+### Deterministic token portraits
+
+The optional `token-avatar` export lets community frontends render the same visual identity from a verified `AssetID`. Artwork is presentation only and never replaces token-definition or transaction verification.
+
+```js
+import {tokenAvatarPng} from '@myria-network/observer/token-avatar';
+
+const image = tokenAvatarPng(asset.assetId, asset.symbol, asset.name);
+document.querySelector('img').src = image;
+```
+
+`tokenAvatarArt()` is platform-neutral. Browser applications can use `drawTokenAvatar()` or `tokenAvatarPng()`. MYR and TMYR always use a violet palette and the letter `M`.
 
 ## Client
 

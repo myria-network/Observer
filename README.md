@@ -53,6 +53,7 @@ The client and database adapters work independently. `createCommunityObserver()`
 - Generate import capsules for verified collections and catalogs.
 - Receive snapshots and ordered patches over one WebSocket connection per client.
 - Project bounded pages asynchronously into MongoDB, PostgreSQL, MySQL, or MariaDB.
+- Generate deterministic Pixel Blast token portraits from verified AssetIDs.
 
 The complete method reference, accepted filters, fee calculation, return fields, errors, subscriptions, runtime controls, and persistence methods are documented in the [API reference](./API.md).
 
@@ -62,6 +63,14 @@ Install the public package from npm:
 
 ```bash
 npm install @myria-network/observer
+```
+
+Community frontends can generate the same token image without downloading an icon:
+
+```js
+import {tokenAvatarPng} from '@myria-network/observer/token-avatar';
+
+tokenImage.src = tokenAvatarPng(asset.assetId, asset.symbol, asset.name);
 ```
 
 The current `0.x` line is a public preview. The `next` channel can be selected

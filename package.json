@@ -1,12 +1,12 @@
 {
   "name":"@myria-network/observer",
-  "version":"0.1.0",
+  "version":"0.2.0",
   "description":"Read-only MYRIA Observer SDK, catalog client and database projection adapters",
   "type":"module",
   "sideEffects":false,
   "main":"./dist/index.js",
   "types":"./dist/index.d.ts",
-  "exports":{".":{"types":"./dist/index.d.ts","import":"./dist/index.js"},"./storage":{"types":"./dist/storage.d.ts","import":"./dist/storage.js"}},
+  "exports":{".":{"types":"./dist/index.d.ts","import":"./dist/index.js"},"./storage":{"types":"./dist/storage.d.ts","import":"./dist/storage.js"},"./token-avatar":{"types":"./dist/token-avatar.d.ts","import":"./dist/token-avatar.js"}},
   "files":["dist","README.md","API.md","DATA_MODEL.md","DATA_PROVENANCE.md","DATABASES.md","SECURITY.md","CONTRIBUTING.md","examples"],
   "scripts":{"build":"node build.mjs","test":"node --test test/*.test.mjs","prepare":"npm run build","prepack":"npm run build"},
   "engines":{"node":">=24.14.0 <25"},
@@ -15,7 +15,7 @@
   "homepage":"https://github.com/myria-network/Observer#readme",
   "bugs":{"url":"https://github.com/myria-network/Observer/issues"},
   "publishConfig":{"access":"public","provenance":true},
-  "dependencies":{"socket.io-client":"4.8.1"},
+  "dependencies":{"@myria-network/dapp":"^0.2.1","socket.io-client":"4.8.1"},
   "peerDependencies":{"mongodb":">=6 <8","pg":">=8 <9","mysql2":">=3 <4"},
   "peerDependenciesMeta":{"mongodb":{"optional":true},"pg":{"optional":true},"mysql2":{"optional":true}}
 }
