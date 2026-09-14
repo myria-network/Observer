@@ -1,19 +1,19 @@
-# API de MYRIA Observer
+# MYRIA Observer API
 
-`createCommunityObserver()` no usa una API de otro Observer. El runtime recibe anuncios de discovery, recupera contenido desde los carriers indicados por la red y genera localmente los resultados que expone el cliente.
+`createCommunityObserver()` never consumes another Observer API. Its runtime receives discovery announcements, retrieves content from network-advertised carriers, verifies it, and generates the local results exposed through this client.
 
-## Cliente
+## Client
 
 ```js
 const client = createMyriaObserverClient({url, timeoutMs?, fetch?, socketFactory?});
 ```
 
-- `url` debe usar HTTPS. Se permite HTTP solamente para `localhost`, `127.0.0.1` y `::1`.
-- `timeoutMs` admite entre 1 y 120 segundos.
-- `fetch` y `socketFactory` permiten integrar runtimes controlados o pruebas.
-- Las respuestas JSON mayores a 4 MiB se rechazan.
+- `url` must use HTTPS. HTTP is accepted only for `localhost`, `127.0.0.1`, and `::1`.
+- `timeoutMs` accepts values from 1 to 120 seconds.
+- `fetch` and `socketFactory` allow controlled runtime integration and testing.
+- JSON responses larger than 4 MiB are rejected.
 
-### Catálogo genérico
+### Generic catalog call
 
 ```js
 await client.catalog({
@@ -23,25 +23,25 @@ await client.catalog({
 });
 ```
 
-Parámetros aceptados: `limit`, `offset`, `q`, `status`, `target`, `range`, `root`, `depth`, `nodes`, `type`, `health` y `address`. El servidor aplica sus propios límites y paginación.
+Accepted parameters are `limit`, `offset`, `q`, `status`, `target`, `range`, `root`, `depth`, `nodes`, `type`, `health`, and `address`. The server applies its own limits and backend pagination.
 
-| Módulo | Método | Detalle por ID | Live |
+| Module | Method | Detail by ID | Live |
 | --- | --- | --- | --- |
-| `overview` | `overview()` | — | Sí |
-| `stats` | `stats()` | — | Sí |
-| `status` | `status()` | — | Sí |
+| `overview` | `overview()` | — | Yes |
+| `stats` | `stats()` | — | Yes |
+| `status` | `status()` | — | Yes |
 | `assets` | `assets()` | — | No |
-| `carriers` | `carriers()` | — | Sí |
-| `activity` | `activity()` | — | Sí |
+| `carriers` | `carriers()` | — | Yes |
+| `activity` | `activity()` | — | Yes |
 | `research` | `research()` | — | No |
-| `live-spores` | `liveSpores()` | — | Sí |
-| `timeline` | `timeline()` | — | Sí |
+| `live-spores` | `liveSpores()` | — | Yes |
+| `timeline` | `timeline()` | — | Yes |
 | `spores` | `spores()` | `spore(id)` | No |
-| `transfers` | `transfers()` | — | Sí |
-| `transaction-gallery` | `transactionGallery()` | — | Sí |
-| `wallet-gallery` | `walletGallery()` | — | Sí |
-| `social-media` | `socialMedia()` | — | Sí |
-| `contracts` | `contracts()` | `contract(id)` | Sí |
+| `transfers` | `transfers()` | — | Yes |
+| `transaction-gallery` | `transactionGallery()` | — | Yes |
+| `wallet-gallery` | `walletGallery()` | — | Yes |
+| `social-media` | `socialMedia()` | — | Yes |
+| `contracts` | `contracts()` | `contract(id)` | Yes |
 | `objects` | `objects()` | `object(id)` | No |
 | `collections` | `collections()` | `collection(id)` | No |
 | `catalogs` | `catalogs()` | `catalogDetail(id)` | No |
@@ -54,40 +54,39 @@ Parámetros aceptados: `limit`, `offset`, `q`, `status`, `target`, `range`, `roo
 | `graph` | `graph()` | — | No |
 | `wallet` | `wallet(address)` | — | No |
 
-Todos los métodos de listado aceptan un objeto con paginación y filtros, seguido opcionalmente por `{signal}`.
+Every list method accepts a pagination and filter object followed by an optional `{signal}` request option.
 
-### Otras lecturas
+### Additional reads
 
-- `health({signal?})`: estado del proceso, Genesis y workers.
-- `discoveryCapsule({type, id, signal?})`: genera una cápsula importable para un catálogo o colección ya verificados.
-- `socialMediaImageUrl(postId)`: construye la URL local y validada del medio cacheado por el Observer.
-- `subscribe(request, listener, {onError?})`: recibe snapshot inicial y parches live.
-- `close()`: cierra Socket.IO y todas las suscripciones del cliente.
+- `health({signal?})`: process, Genesis, and worker status.
+- `discoveryCapsule({type, id, signal?})`: creates an importable capsule for an already verified catalog or collection.
+- `socialMediaImageUrl(postId)`: builds the local validated URL for media cached by the Observer.
+- `subscribe(request, listener, {onError?})`: receives an initial snapshot and ordered live patches.
+- `close()`: closes Socket.IO and every subscription owned by the client.
 
-## Runtime comunitario
+## Community runtime
 
 ```js
 const observer = await createCommunityObserver(options);
 ```
 
-Opciones:
-
-| Campo | Descripción |
+| Option | Description |
 | --- | --- |
-| `home` | Directorio exclusivo y persistente del Observer. Obligatorio. |
-| `network` | Alias local. Por defecto `test-myria`. |
-| `port` | Puerto loopback. `0` solicita uno libre al sistema. |
-| `initializePublicNetwork` | Instala el bootstrap público si falta. Por defecto `true`. |
-| `config` | Configuración acotada de verificación, transportes y retención. |
-| `policy` | Política de lectura avanzada. |
-| `multi` | Opciones avanzadas de transportes múltiples. |
+| `home` | Exclusive persistent Observer directory. Required. |
+| `network` | Local network alias. Defaults to `test-myria`. |
+| `port` | Loopback port. Use `0` to request a free system port. |
+| `initializePublicNetwork` | Installs public bootstrap evidence when missing. Defaults to `true`. |
+| `config` | Bounded verification, transport, and retention configuration. |
+| `policy` | Advanced read policy. |
+| `multi` | Advanced multi-transport options. |
+| `engine` | Compatible verified MYRIA engine adapter. |
 
-La instancia devuelve:
+The returned instance exposes:
 
-- `networkId` y `url`.
-- `status()` para métricas locales.
-- `catalog(request)` para lecturas dentro del mismo proceso.
-- `submit(candidate)` para integrar un transporte público adicional; el candidato pasa por la misma admisión y verificación.
-- `close()` idempotente.
+- `networkId` and `url`.
+- `status()` for local status and budgets.
+- `catalog(request)` for in-process reads.
+- `submit(candidate)` to connect another public announcement transport; the candidate still passes normal admission and verification.
+- Idempotent `close()`.
 
-El runtime fija `mutateNetwork: false` y no incluye el dashboard. Por tanto, tampoco distribuye Spore Game.
+The runtime fixes `mutateNetwork: false` and serves no dashboard assets. It does not distribute Spore Game.

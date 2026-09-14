@@ -1,20 +1,20 @@
-# Persistencia del Observer
+# Observer persistence
 
-El motor conserva su store local de verificación. Las bases externas reciben una proyección asíncrona de los resultados admitidos por el Observer; no verifican firmas ni sustituyen el store criptográfico.
+The engine retains its own cryptographic verification store. External databases receive an asynchronous projection of results admitted by the Observer; they do not verify signatures and never replace that authoritative local store.
 
-## Esquema propuesto
+## Proposed schema
 
-El prefijo predeterminado es `myria_observer`.
+The default prefix is `myria_observer`.
 
-| Colección o tabla | Clave | Contenido | Retención |
+| Collection or table | Key | Content | Retention |
 | --- | --- | --- | --- |
-| `myria_observer_entities` | `networkId + kind + entityId` | Esporas, objetos, contratos, colecciones, catálogos y claims | Persistente |
-| `myria_observer_routes` | `networkId + routeId` | Carrier, destino, admisión, disponibilidad y fechas | Según la política del operador |
-| `myria_observer_events` | `networkId + eventId` | Actividad reciente | 7 días por defecto |
-| `myria_observer_metrics` | `networkId + timestamp` | Contadores agregados y estado de workers | 90 días por defecto |
-| `myria_observer_checkpoints` | `networkId + name` | Progreso y resultado de la proyección | Persistente |
+| `myria_observer_entities` | `networkId + kind + entityId` | Spores, objects, contracts, collections, catalogs, and claims | Persistent |
+| `myria_observer_routes` | `networkId + routeId` | Carrier, locator, admission, availability, and timestamps | Operator policy |
+| `myria_observer_events` | `networkId + eventId` | Recent activity | 7 days by default |
+| `myria_observer_metrics` | `networkId + timestamp` | Aggregated counters and worker status | 90 days by default |
+| `myria_observer_checkpoints` | `networkId + name` | Projection progress and outcome | Persistent |
 
-Todas las claves incluyen `networkId`, por lo que una nueva Genesis no puede mezclarse accidentalmente con la anterior. `observerDatabaseNames(prefix)` permite consultar los nombres antes de crear la base. El prefijo acepta únicamente letras minúsculas, números y `_`.
+Every key includes `networkId`, preventing data from different Genesis networks from being mixed accidentally. `observerDatabaseNames(prefix)` returns the names before creating the database. Prefixes accept lowercase letters, numbers, and `_` only.
 
 ## MongoDB
 
@@ -26,46 +26,55 @@ import {
   ObserverProjectionWorker,
 } from '@myria-network/observer';
 
-const observer=await createCommunityObserver({home:'./observer-data',port:0});
-const client=createMyriaObserverClient({url:observer.url});
-const database=await createMongoObserverDatabase({
-  url:process.env.MONGODB_URI,
-  database:'myria_observer',
+const observer = await createCommunityObserver({
+  home: './observer-data',
+  port: 0,
+  engine,
 });
-const worker=new ObserverProjectionWorker({client,database,pageSize:100,intervalMs:15000});
+const client = createMyriaObserverClient({url: observer.url});
+const database = await createMongoObserverDatabase({
+  url: process.env.MONGODB_URI,
+  database: 'myria_observer',
+});
+const worker = new ObserverProjectionWorker({
+  client,
+  database,
+  pageSize: 100,
+  intervalMs: 15000,
+});
 await worker.start();
 ```
 
-El conector crea índices únicos e índices temporales TTL para eventos y métricas. También se puede inyectar un `MongoClient` o un objeto `db` ya administrado por la aplicación.
+The connector creates unique indexes and TTL indexes for events and metrics. Applications may instead inject an already-managed `MongoClient` or `db` object.
 
 ## PostgreSQL
 
 ```js
-const database=await createPostgresObserverDatabase({
-  connectionString:process.env.DATABASE_URL,
-  prefix:'myria_observer',
+const database = await createPostgresObserverDatabase({
+  connectionString: process.env.DATABASE_URL,
+  prefix: 'myria_observer',
 });
 ```
 
-Usa `JSONB`, claves primarias compuestas, upserts parametrizados e índices por fecha. También acepta un `Pool` o cliente compatible mediante `client`.
+The adapter uses `JSONB`, composite primary keys, parameterized upserts, and timestamp indexes. It also accepts a compatible `Pool` or client through `client`.
 
-## MySQL y MariaDB
+## MySQL and MariaDB
 
 ```js
-const mysql=await createMysqlObserverDatabase({url:process.env.DATABASE_URL});
-const mariadb=await createMariaDbObserverDatabase({url:process.env.DATABASE_URL});
+const mysql = await createMysqlObserverDatabase({url: process.env.DATABASE_URL});
+const mariadb = await createMariaDbObserverDatabase({url: process.env.DATABASE_URL});
 ```
 
-Ambos usan el protocolo de `mysql2`, tablas InnoDB administradas por el servidor, columnas `JSON`, upserts y consultas parametrizadas. MariaDB debe tener soporte para el tipo `JSON` o su alias compatible.
+Both adapters use the `mysql2` protocol, server-managed InnoDB tables, `JSON` columns, parameterized queries, and upserts. MariaDB must support the `JSON` type or its compatible alias.
 
-## Worker
+## Projection worker
 
-`syncOnce()` proyecta solamente la página reciente de cada catálogo. `start()` la repite después de terminar la ejecución anterior, por lo que nunca superpone ciclos. `backfill({maxRecords})` recorre páginas del backend con un límite global explícito. Ningún método descarga un catálogo completo sin límite.
+`syncOnce()` projects only the most recent page of every catalog. `start()` schedules another pass only after the previous one finishes, so cycles never overlap. `backfill({maxRecords})` walks backend pages under an explicit global limit. No method downloads an unlimited catalog.
 
 ```js
 await worker.initialize();
-await worker.backfill({maxRecords:25_000});
-await worker.start({immediate:false});
+await worker.backfill({maxRecords: 25_000});
+await worker.start({immediate: false});
 
 console.log(worker.status());
 
@@ -75,7 +84,7 @@ client.close();
 await observer.close();
 ```
 
-Instala solamente el driver necesario:
+Install only the database driver you need:
 
 ```bash
 npm install mongodb
@@ -83,4 +92,4 @@ npm install pg
 npm install mysql2
 ```
 
-Las credenciales permanecen en variables de entorno o en el gestor de secretos del operador. El SDK no las guarda, imprime ni incorpora al paquete.
+Keep credentials in environment variables or the operator's secret manager. The SDK does not store, print, or package them.

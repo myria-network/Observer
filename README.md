@@ -1,43 +1,47 @@
 # MYRIA Observer SDK
 
-Biblioteca JavaScript para ejecutar un Observer comunitario autónomo de solo lectura y consumir todas sus vistas mediante una única API de catálogos. El paquete no contiene llaves privadas, credenciales de AWS, datos de wallets ni Spore Game.
+JavaScript library for running an autonomous, read-only community Observer and consuming all of its views through a single catalog API. The package contains no private keys, AWS credentials, wallet data, dashboard assets, or Spore Game code.
 
-El nodo no consulta otro Observer. Escucha directamente los transportes de discovery habilitados, admite anuncios con límites locales, recupera las esporas desde los carriers anunciados, verifica su evidencia y construye su propia base de datos. Sus contratos, catálogos, colecciones, rutas y métricas representan únicamente lo observado por esa instancia.
+The node does not query another Observer. It listens directly to the enabled discovery transports, admits announcements under local resource limits, retrieves spores from their announced carriers, verifies the available evidence, and builds its own database. Contracts, catalogs, collections, routes, and metrics always describe what that Observer instance has observed.
 
 ```text
 Nostr / Waku / Iroh / P2P / DHT / Hyperswarm
-                       ↓ anuncios
-             Observer comunitario
-                       ↓ recuperación
-             Carriers descubiertos
-                       ↓ verificación
-        Base local + API HTTP/WebSocket
+                       ↓ announcements
+                Community Observer
+                       ↓ retrieval
+                Discovered carriers
+                       ↓ verification
+          Local store + HTTP/WebSocket API
                        ↓
-          React / Next / Vue / Svelte
+            React / Next / Vue / Svelte
 ```
 
-## Estado del repositorio
+## Repository status
 
-Este repositorio distribuye el SDK público: cliente HTTP/WebSocket, catálogo tipado, adaptadores de persistencia y el punto de integración del runtime. No incluye el dashboard ni llaves privadas.
+This repository distributes the public SDK: the HTTP/WebSocket client, typed catalog, database projection adapters, and runtime integration point. It does not include the dashboard.
 
-El cliente y los adaptadores funcionan de forma independiente. `createCommunityObserver()` necesita además un motor MYRIA compatible que implemente la verificación y los transportes. Mientras ese motor no se publique en npm, se inyecta explícitamente mediante la opción `engine`; el SDK nunca usa `observer.myria.network` como fuente de datos.
+The client and database adapters work independently. `createCommunityObserver()` also needs a compatible MYRIA engine that provides cryptographic verification and discovery transports. Until that engine is publicly distributed through npm, pass its verified adapter explicitly through `engine`. The SDK never uses `observer.myria.network` as a data source.
 
-## Instalación
+## Installation
+
+Install directly from GitHub:
 
 ```bash
 npm install github:myria-network/Observer
 ```
 
-Requiere Node.js 24.14.0. Cuando el motor público esté disponible, podrá instalarse junto con el SDK. Hasta entonces, `createMyriaObserverClient()` y los conectores de base de datos están disponibles directamente, y el arranque completo acepta un adaptador `engine` verificado.
+Node.js 24.14.0 is required. When the public engine package becomes available, it can be installed alongside this SDK. Until then, `createMyriaObserverClient()` and the database connectors are immediately usable, while a complete Observer process requires an injected engine adapter.
 
-## Levantar un Observer comunitario
+## Run a community Observer
 
 ```js
 import {createCommunityObserver} from '@myria-network/observer';
+import * as engine from 'test-myria/observer'; // Compatible verified engine
 
 const observer = await createCommunityObserver({
   home: './myria-observer-data',
   port: 4318,
+  engine,
   config: {
     verify: true,
     activeChecks: true,
@@ -53,37 +57,34 @@ process.once('SIGINT', async () => {
 });
 ```
 
-El arranque instala únicamente el bootstrap público incluido en `test-myria`, abre stores separados para esa Genesis, inicia discovery y sirve la API en loopback. No crea wallets ni identidades de Keeper o Scout. Para exponerlo en Internet se debe usar un reverse proxy HTTPS que conserve los límites del servidor.
+Startup installs only the public bootstrap supplied by the engine, opens stores separated by Genesis, starts discovery, and serves the API on loopback. It never creates wallets, Keepers, Scouts, or Genesis identities. Put a hardened HTTPS reverse proxy in front of any Internet-facing deployment.
 
-## Consumir un Observer
+## Consume an Observer
 
 ```js
 import {createMyriaObserverClient} from '@myria-network/observer';
 
-const node = await createCommunityObserver({
-  home: './myria-observer-data',
-  port: 0
+const myria = createMyriaObserverClient({
+  url: 'https://your-observer.example'
 });
-
-const myria = createMyriaObserverClient({url: node.url});
 
 const health = await myria.health();
 const spores = await myria.spores({limit: 20, offset: 0});
 const contracts = await myria.contracts({limit: 20, offset: 0});
 
 console.log(health.networkId, spores.total, contracts.items);
-
 myria.close();
-await node.close();
 ```
 
-Este ejemplo consume la API generada por el mismo nodo. No depende de un Observer central.
+## Framework integration
 
-## Uso con frameworks
+The full Observer process needs Node.js, persistent storage, and long-lived discovery connections. It can serve any frontend but does not run inside a browser.
 
-El proceso completo requiere Node.js, almacenamiento persistente y conexiones de discovery de larga duración. Puede acompañar cualquier frontend, pero no se ejecuta dentro del navegador. En React, Vue o Svelte se usa `createMyriaObserverClient` contra la API del Observer administrado por esa comunidad. En Next.js se puede ejecutar el nodo en un servicio Node persistente; no debe iniciarse por request ni dentro de una función serverless.
+- React, Vue, and Svelte applications use `createMyriaObserverClient()` against the API of their community-managed Observer.
+- A Next.js deployment can run the Observer in a separate persistent Node.js service. Do not start it per request or inside a serverless function.
+- Any backend can use the same catalog client or project verified results into a supported database.
 
-Todas las lecturas pasan por `POST /observer/catalog`. Los nombres de los módulos, parámetros y capacidades live están en `OBSERVER_CATALOG`; la aplicación no necesita construir una URL distinta por vista.
+All view reads use `POST /observer/catalog`. Module names, parameters, and live capabilities are declared in `OBSERVER_CATALOG`, so applications do not need to construct a different URL for every view.
 
 ```js
 import {OBSERVER_CATALOG} from '@myria-network/observer';
@@ -91,7 +92,7 @@ import {OBSERVER_CATALOG} from '@myria-network/observer';
 console.table(OBSERVER_CATALOG);
 ```
 
-## Actualizaciones live
+## Live updates
 
 ```js
 const subscription = myria.subscribe(
@@ -100,17 +101,15 @@ const subscription = myria.subscribe(
   {onError: console.error}
 );
 
-// Cuando la vista deja de usarse:
+// Release the subscription when the view is no longer active.
 subscription.close();
 myria.close();
 ```
 
-El cliente mantiene un solo Socket.IO por instancia, valida revisiones y parches, solicita un snapshot nuevo cuando detecta una discontinuidad y elimina la conexión al cerrar la última suscripción.
+The client maintains one Socket.IO connection per instance, validates revisions and patches, requests a fresh snapshot after a discontinuity, and disconnects after the last subscription closes.
 
-## JavaScript de contratos
+## Contract JavaScript
 
-`myria.contract(contractId)` devuelve la fuente solamente cuando el Observer recuperó un paquete publicado y verificó su `NetworkID`, `ContractID`, transacción de despliegue, `WasmID`, hash de fuente y firmas. El Observer no compila ni ejecuta ese JavaScript. Una reproducción de WASM, si se necesita para una auditoría, es una operación independiente del motor de una wallet o herramienta especializada.
+`myria.contract(contractId)` returns source code only after the Observer has recovered a published source package and verified its `NetworkID`, `ContractID`, deployment transaction, `WasmID`, source hash, and signatures. The Observer neither compiles nor executes that JavaScript. Replaying WASM for an audit is a separate wallet-engine or specialized-tool operation.
 
-Consulta [API.md](./API.md) para todos los métodos y [SECURITY.md](./SECURITY.md) antes de publicar una instancia.
-
-Para proyectar los resultados en MongoDB, PostgreSQL, MySQL o MariaDB consulta [DATABASES.md](./DATABASES.md). Los conectores crean un esquema común e índices y trabajan mediante un worker asíncrono acotado.
+See [DATA_PROVENANCE.md](./DATA_PROVENANCE.md) for how every view is discovered, verified, and derived. See [API.md](./API.md) for every method, [SECURITY.md](./SECURITY.md) before exposing an Observer publicly, and [DATABASES.md](./DATABASES.md) to project admitted results into MongoDB, PostgreSQL, MySQL, or MariaDB through a bounded asynchronous worker. Maintainers can follow [PUBLISHING.md](./PUBLISHING.md) to release the package under the `@myria-network` npm scope.

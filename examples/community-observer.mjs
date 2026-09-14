@@ -1,8 +1,10 @@
 import {createCommunityObserver} from '@myria-network/observer';
+import * as engine from 'test-myria/observer';
 
 const observer=await createCommunityObserver({
   home:process.env.MYRIA_OBSERVER_HOME??'./myria-community-observer',
   port:Number(process.env.PORT??4318),
+  engine,
   config:{verify:true,activeChecks:true},
 });
 

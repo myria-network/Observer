@@ -1,31 +1,35 @@
-# Seguridad para operadores de Observer
+# Security guidance for Observer operators
 
-Un Observer es un lector y auditor local. Sus resultados expresan lo que esa instancia descubrió y verificó; no constituyen un recuento global ni una nueva autoridad de red.
+An Observer is a local reader and auditor. Its results describe what that instance discovered and verified; they are neither a global network count nor a new source of authority.
 
-## Datos y llaves
+## Data and keys
 
-- Usa un home exclusivo para cada Genesis.
-- No coloques semillas, contraseñas, llaves privadas o credenciales cloud en el home, variables impresas, configuración o logs.
-- El runtime comunitario instala evidencia pública y nunca crea una wallet.
-- No montes el home administrativo de Genesis dentro del proceso público.
+- Use an exclusive home for each Genesis.
+- Never place seeds, passwords, private keys, or cloud credentials in the home, printed environment, configuration, or logs.
+- The community runtime installs public evidence and never creates a wallet.
+- Never mount the administrative Genesis home in the public process.
 
-## Exposición de red
+## Network exposure
 
-- El servidor escucha en loopback. Publica con Nginx, Caddy o un balanceador HTTPS.
-- Conserva límites de body, timeouts, conexiones WebSocket y rate limits.
-- No abras CORS global. En navegador, consume desde el mismo origen o mediante un backend/reverse proxy controlado.
-- No conviertas locators anonimizados en destinos de fetch. La verificación usa rutas admitidas internamente.
+- The server listens on loopback. Publish it through Nginx, Caddy, or an HTTPS load balancer.
+- Preserve request-body limits, timeouts, WebSocket connection limits, and rate limits.
+- Do not enable global CORS. Browser applications should use the same origin or a controlled backend/reverse proxy.
+- Never turn anonymized locators into fetch destinations. Verification uses only internally admitted routes.
 
-## Contenido no confiable
+## Untrusted content
 
-- Discovery, hints, nombres, metadatos, imágenes, JavaScript y URLs son entradas no confiables hasta superar su verificación correspondiente.
-- El Observer verifica frames, esporas, manifests, objetos, firmas, hashes, NetworkID y vínculos económicos disponibles.
-- El Observer no ejecuta ni compila contratos descubiertos.
-- El paquete fuente de un contrato se muestra solo después de vincularlo con un despliegue verificado. No se reconstruye código desde WASM.
+- Discovery announcements, hints, names, metadata, images, JavaScript, and URLs remain untrusted until they pass their applicable verification.
+- The Observer verifies frames, spores, manifests, objects, signatures, hashes, `NetworkID`, and available economic links.
+- The Observer neither executes nor compiles discovered contracts.
+- Contract source is displayed only after it is linked to a verified deployment. Source code is never reconstructed from WASM.
 
-## Recursos
+## Resource controls
 
-- Mantén paginación del backend; no cargues catálogos completos en memoria del cliente.
-- Configura retención para eventos, rutas, medios sociales y evidencia no verificada.
-- Separa workers de verificación, mantenimiento y recuperación de medios.
-- Revisa `status().budgets`, almacenamiento, colas y errores de workers.
+- Keep pagination in the backend; never load complete catalogs into a browser client.
+- Configure retention for events, routes, social media, and unverified evidence.
+- Separate verification, maintenance, and media-retrieval workers.
+- Monitor `status().budgets`, storage, queues, and worker failures.
+
+## Reporting a vulnerability
+
+Do not open a public issue for an unpatched vulnerability. Contact the maintainers privately and include the affected version, reproduction steps, impact, and any proposed mitigation.

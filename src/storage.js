@@ -6,11 +6,11 @@ const DEFAULT_EVENT_RETENTION_MS=7*24*60*60*1000;
 const DEFAULT_METRIC_RETENTION_MS=90*24*60*60*1000;
 
 export const OBSERVER_DATABASE_BLUEPRINT=Object.freeze({
-  entities:Object.freeze({suffix:'entities',primaryKey:['networkId','kind','entityId'],description:'Esporas, objetos, contratos, colecciones, catálogos y claims ya admitidos por el Observer.'}),
-  routes:Object.freeze({suffix:'routes',primaryKey:['networkId','routeId'],description:'Rutas descubiertas, carrier, admisión, disponibilidad y fechas de verificación.'}),
-  events:Object.freeze({suffix:'events',primaryKey:['networkId','eventId'],retentionMs:DEFAULT_EVENT_RETENTION_MS,description:'Historial operativo acotado para actividad y auditoría.'}),
-  metrics:Object.freeze({suffix:'metrics',primaryKey:['networkId','timestamp'],retentionMs:DEFAULT_METRIC_RETENTION_MS,description:'Snapshots agregados; evita incrementar la base por cada anuncio.'}),
-  checkpoints:Object.freeze({suffix:'checkpoints',primaryKey:['networkId','name'],description:'Estado del worker de proyección y fecha de la última sincronización.'}),
+  entities:Object.freeze({suffix:'entities',primaryKey:['networkId','kind','entityId'],description:'Spores, objects, contracts, collections, catalogs, and claims admitted by the Observer.'}),
+  routes:Object.freeze({suffix:'routes',primaryKey:['networkId','routeId'],description:'Discovered routes, carrier, admission, availability, and verification timestamps.'}),
+  events:Object.freeze({suffix:'events',primaryKey:['networkId','eventId'],retentionMs:DEFAULT_EVENT_RETENTION_MS,description:'Bounded operational history for activity and auditing.'}),
+  metrics:Object.freeze({suffix:'metrics',primaryKey:['networkId','timestamp'],retentionMs:DEFAULT_METRIC_RETENTION_MS,description:'Aggregated snapshots that avoid a database write for every announcement.'}),
+  checkpoints:Object.freeze({suffix:'checkpoints',primaryKey:['networkId','name'],description:'Projection worker state and last synchronization timestamp.'}),
 });
 
 export function observerDatabaseNames(prefix='myria_observer'){
