@@ -23,7 +23,7 @@ export function walletAvatar(address) {
     } return digest[cursor++] / 256; };
     const palette = palettes[Math.floor(random() * palettes.length)];
     const composition = compositions[Math.floor(random() * compositions.length)];
-    const density = .28 + random() * .44, reach = random(), turnRate = .18 + random() * .42;
+    const density = .3 + random() * .44, reach = random(), turnRate = .18 + random() * .42;
     const cells = new Map();
     const put = (x, y, power) => { if (x < 0 || x >= 24 || y < 0 || y >= 24)
         return; const key = y * 24 + x; cells.set(key, Math.max(cells.get(key) ?? 0, power)); };
@@ -102,22 +102,10 @@ export function walletAvatar(address) {
         const size = 2.15 + random() * 1.5;
         pixels.push({ x: Math.min(SIZE - size, x * 4 + .35 + random() * .65), y: Math.min(SIZE - size, y * 4 + .35 + random() * .65), size, opacity: .38 + random() * .5, tone: bright ? (random() > .45 ? 'growth' : 'accent') : 'branch' });
     }
-    const candidates = [...pixels], nodes = [];
-    for (let index = candidates.length - 1; index > 0; index--) {
-        const other = Math.floor(random() * (index + 1));
-        [candidates[index], candidates[other]] = [candidates[other], candidates[index]];
-    }
-    const nodeCount = 4 + Math.floor(random() * (5 + density * 10));
-    for (const pixel of candidates) {
-        if (nodes.length >= nodeCount)
-            break;
-        const radius = .8 + random() * 1.35, x = Math.max(radius, Math.min(SIZE - radius, pixel.x + pixel.size / 2)), y = Math.max(radius, Math.min(SIZE - radius, pixel.y + pixel.size / 2));
-        if (nodes.every(node => Math.hypot(node.x - x, node.y - y) > 8))
-            nodes.push({ x, y, radius, opacity: .5 + random() * .4, tone: random() > .35 ? 'growth' : 'accent' });
-    }
+    const nodes = [];
     const auras = anchors.slice(0, 1 + Math.floor(random() * Math.min(3, anchors.length))).map(anchor => ({ x: anchor.x * 4, y: anchor.y * 4, radius: 13 + anchor.radius * 3, opacity: .025 + random() * .05 }));
     const gridRegions = random() > .22 ? anchors.slice(0, 1 + Math.floor(random() * Math.min(3, anchors.length))).map(anchor => ({ x: anchor.x * 4, y: anchor.y * 4, radius: 16 + anchor.radius * 3.2 })) : [];
-    return { version: 10, size: SIZE, background: '#0f1426', gridSize: 8 + Math.floor(random() * 6), gridOffset: Math.floor(random() * 8), gridOpacity: .025 + random() * .035, palette, composition, density, pixels, nodes, auras, gridRegions };
+    return { version: 11, size: SIZE, background: '#0f1426', gridSize: 8 + Math.floor(random() * 6), gridOffset: Math.floor(random() * 8), gridOpacity: .04 + random() * .035, palette, composition, density, pixels, nodes, auras, gridRegions };
 }
 function rgb(value) { return [Number.parseInt(value.slice(1, 3), 16), Number.parseInt(value.slice(3, 5), 16), Number.parseInt(value.slice(5, 7), 16)]; }
 function blend(bytes, width, x, y, color, alpha) {
@@ -165,15 +153,6 @@ export function walletAvatarRgba(address, resolution = 384) {
         for (let y = top; y < top + side; y++)
             for (let x = left; x < left + side; x++)
                 blend(bytes, resolution, x, y, color, pixel.opacity);
-    }
-    for (const node of art.nodes) {
-        const color = rgb(art.palette[node.tone]), cx = node.x * scale, cy = node.y * scale, radius = node.radius * scale, outer = radius + scale * .65;
-        for (let y = Math.floor(cy - outer); y <= Math.ceil(cy + outer); y++)
-            for (let x = Math.floor(cx - outer); x <= Math.ceil(cx + outer); x++) {
-                const d = Math.hypot(x + .5 - cx, y + .5 - cy), edge = Math.max(0, Math.min(1, outer - d));
-                if (d <= outer)
-                    blend(bytes, resolution, x, y, color, node.opacity * edge * (d <= radius ? 1 : .28));
-            }
     }
     return { width: resolution, height: resolution, bytes, art };
 }

@@ -43,7 +43,7 @@ document.querySelector('img').src = image;
 
 ### Deterministic wallet portraits
 
-The optional `wallet-avatar` export derives a square Pixel Blast portrait from a public wallet address. The same address produces the same portrait, while different addresses select among five compositions, eight palettes, localized grid regions and variable density. Wallet portraits deliberately contain no letter or central core, and preserve truly dark areas between their branches.
+The optional `wallet-avatar` export derives a square Pixel Blast portrait from a public wallet address. The same address produces the same portrait, while different addresses select among five compositions, eight palettes, localized grid regions and variable density. Wallet portraits deliberately contain no letter, central core or circular node overlay, and preserve truly dark areas between their branches.
 
 ```js
 import {walletAvatarRgba} from '@myria-network/observer/wallet-avatar';
