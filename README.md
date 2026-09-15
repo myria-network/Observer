@@ -54,6 +54,7 @@ The client and database adapters work independently. `createCommunityObserver()`
 - Receive snapshots and ordered patches over one WebSocket connection per client.
 - Project bounded pages asynchronously into MongoDB, PostgreSQL, MySQL, or MariaDB.
 - Generate deterministic Pixel Blast token portraits from verified AssetIDs.
+- Generate deterministic, letter-free Pixel Blast wallet portraits from public wallet addresses.
 
 The complete method reference, accepted filters, fee calculation, return fields, errors, subscriptions, runtime controls, and persistence methods are documented in the [API reference](./API.md).
 
@@ -72,6 +73,24 @@ import {tokenAvatarPng} from '@myria-network/observer/token-avatar';
 
 tokenImage.src = tokenAvatarPng(asset.assetId, asset.symbol, asset.name);
 ```
+
+Wallet galleries can use the same public address to produce the same square portrait in every compatible interface:
+
+```js
+import {walletAvatarRgba} from '@myria-network/observer/wallet-avatar';
+
+const portrait = walletAvatarRgba(wallet.address, 384);
+const canvas = document.querySelector('canvas');
+canvas.width = portrait.width;
+canvas.height = portrait.height;
+canvas.getContext('2d').putImageData(
+  new ImageData(portrait.bytes, portrait.width, portrait.height),
+  0,
+  0
+);
+```
+
+The address is only a deterministic visual seed. The portrait contains no ownership proof, secret material, name, initial, or central identity mark.
 
 The current `0.x` line is a public preview. The `next` channel can be selected
 explicitly with `npm install @myria-network/observer@next`.

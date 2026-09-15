@@ -25,6 +25,8 @@ See [DATA_MODEL.md](./DATA_MODEL.md) for the complete response structures and re
 | `tokenInitial(symbol?, name?)` | Produces its single-letter mark; MYR and TMYR always use `M`. |
 | `drawTokenAvatar(canvas, options)` | Draws the canonical token portrait into a browser canvas. |
 | `tokenAvatarPng(assetId, symbol?, name?)` | Returns the portrait as a cached PNG base64 data URL. |
+| `walletAvatar(address)` | Produces deterministic, platform-neutral Pixel Blast instructions for a wallet portrait. |
+| `walletAvatarRgba(address, resolution?)` | Rasterizes the portrait into square RGBA bytes at a resolution from 300 to 1024 pixels. |
 
 ### Deterministic token portraits
 
@@ -38,6 +40,25 @@ document.querySelector('img').src = image;
 ```
 
 `tokenAvatarArt()` is platform-neutral. Browser applications can use `drawTokenAvatar()` or `tokenAvatarPng()`. MYR and TMYR always use a violet palette and the letter `M`.
+
+### Deterministic wallet portraits
+
+The optional `wallet-avatar` export derives a dense, square Pixel Blast portrait from a public wallet address. The same address produces the same portrait, while different addresses produce different layouts and palettes. Wallet portraits deliberately contain no letter or central core.
+
+```js
+import {walletAvatarRgba} from '@myria-network/observer/wallet-avatar';
+
+const portrait = walletAvatarRgba(wallet.address, 384);
+canvas.width = portrait.width;
+canvas.height = portrait.height;
+canvas.getContext('2d').putImageData(
+  new ImageData(portrait.bytes, portrait.width, portrait.height),
+  0,
+  0
+);
+```
+
+`walletAvatar()` returns drawing instructions for custom renderers. `walletAvatarRgba()` returns a `Uint8ClampedArray` of RGBA pixels and works without DOM or canvas APIs. These portraits are presentation data and never prove ownership, validity, or wallet identity.
 
 ## Client
 
