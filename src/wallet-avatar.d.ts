@@ -23,16 +23,28 @@ export interface WalletAvatarAura {
   opacity: number;
 }
 
+export interface WalletAvatarGridRegion {
+  x: number;
+  y: number;
+  radius: number;
+}
+
+export type WalletAvatarComposition = 'islands' | 'stream' | 'canopy' | 'forks' | 'rift';
+
 export interface WalletAvatarArt {
   version: number;
   size: number;
   background: string;
   gridSize: number;
   gridOffset: number;
+  gridOpacity: number;
   palette: Readonly<{branch: string; accent: string; growth: string}>;
+  composition: WalletAvatarComposition;
+  density: number;
   pixels: WalletAvatarPixel[];
   nodes: WalletAvatarNode[];
   auras: WalletAvatarAura[];
+  gridRegions: WalletAvatarGridRegion[];
 }
 
 export interface WalletAvatarRaster {

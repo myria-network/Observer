@@ -9,9 +9,13 @@ test('wallet portraits are deterministic, address-specific and fill the frame',(
   const portrait=walletAvatar(first);
   assert.deepEqual(portrait,walletAvatar(first));
   assert.notDeepEqual(portrait,walletAvatar(second));
+  assert.equal(portrait.version,10);
   assert.equal(portrait.size,96);
-  assert.ok(portrait.pixels.length>120);
-  assert.ok(portrait.nodes.length>=9&&portrait.nodes.length<=15);
+  assert.ok(['islands','stream','canopy','forks','rift'].includes(portrait.composition));
+  assert.ok(portrait.density>=.28&&portrait.density<=.72);
+  assert.ok(portrait.pixels.length>40);
+  assert.ok(portrait.nodes.length>=4);
+  assert.ok(portrait.gridRegions.length>=1);
   assert.equal(Object.hasOwn(portrait,'letter'),false);
   assert.equal(Object.hasOwn(portrait,'core'),false);
 });

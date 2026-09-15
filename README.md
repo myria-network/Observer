@@ -90,7 +90,7 @@ canvas.getContext('2d').putImageData(
 );
 ```
 
-The address is only a deterministic visual seed. The portrait contains no ownership proof, secret material, name, initial, or central identity mark.
+The address is only a deterministic visual seed. Five compositions, eight palettes, localized grid regions and variable density provide recognizable variation without exposing secret material. The portrait contains no ownership proof, name, initial, or central identity mark.
 
 The current `0.x` line is a public preview. The `next` channel can be selected
 explicitly with `npm install @myria-network/observer@next`.
