@@ -69,13 +69,13 @@ explicitly with `npm install @myria-network/observer@next`.
 
 Node.js 24.14.0 is required for the packaged runtime integration. Browser applications only use the client bundle. A complete Observer process requires a compatible protocol engine adapter.
 
-The official adapter is currently consumed from the MYRIA source workspace as `test-myria/observer`; it is not bundled with the `@myria-network/observer` npm package. Client-only applications do not need the engine.
+The official adapter is currently consumed from the MYRIA source workspace as `@myria-network/protocol/observer`; it is not bundled with the `@myria-network/observer` npm package. Client-only applications do not need the engine.
 
 ## Run a community Observer
 
 ```js
 import {createCommunityObserver} from '@myria-network/observer';
-import * as engine from 'test-myria/observer';
+import * as engine from '@myria-network/protocol/observer';
 
 const observer = await createCommunityObserver({
   home: './myria-observer-data',

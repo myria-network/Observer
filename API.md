@@ -312,11 +312,11 @@ Stable client codes include invalid request/parameter/ID errors, `OBSERVER_UNAVA
 
 ## Community runtime
 
-The canonical protocol SDK is available from `test-myria/protocol`. The executable adapter expected by `createCommunityObserver()` is the separate `test-myria/observer` subpath; a local `myria-protocol-engine.js` shim is not required. These subpaths currently resolve from the MYRIA source workspace and are not bundled with the `@myria-network/observer` npm package.
+The canonical protocol SDK is available from `@myria-network/protocol`. The executable adapter expected by `createCommunityObserver()` is the separate `@myria-network/protocol/observer` subpath; a local `myria-protocol-engine.js` shim is not required. These subpaths currently resolve from the MYRIA source workspace and are not bundled with the `@myria-network/observer` npm package.
 
 ```js
 import {createCommunityObserver} from '@myria-network/observer';
-import * as engine from 'test-myria/observer';
+import * as engine from '@myria-network/protocol/observer';
 
 const observer = await createCommunityObserver({
   home: './myria-observer-data',
