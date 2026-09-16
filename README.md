@@ -53,8 +53,6 @@ The client and database adapters work independently. `createCommunityObserver()`
 - Generate import capsules for verified collections and catalogs.
 - Receive snapshots and ordered patches over one WebSocket connection per client.
 - Project bounded pages asynchronously into MongoDB, PostgreSQL, MySQL, or MariaDB.
-- Generate deterministic Pixel Blast token portraits from verified AssetIDs.
-- Generate deterministic, letter-free Pixel Blast wallet portraits from public wallet addresses.
 
 The complete method reference, accepted filters, fee calculation, return fields, errors, subscriptions, runtime controls, and persistence methods are documented in the [API reference](./API.md).
 
@@ -66,42 +64,18 @@ Install the public package from npm:
 npm install @myria-network/observer
 ```
 
-Community frontends can generate the same token image without downloading an icon:
-
-```js
-import {tokenAvatarPng} from '@myria-network/observer/token-avatar';
-
-tokenImage.src = tokenAvatarPng(asset.assetId, asset.symbol, asset.name);
-```
-
-Wallet galleries can use the same public address to produce the same square portrait in every compatible interface:
-
-```js
-import {walletAvatarRgba} from '@myria-network/observer/wallet-avatar';
-
-const portrait = walletAvatarRgba(wallet.address, 384);
-const canvas = document.querySelector('canvas');
-canvas.width = portrait.width;
-canvas.height = portrait.height;
-canvas.getContext('2d').putImageData(
-  new ImageData(portrait.bytes, portrait.width, portrait.height),
-  0,
-  0
-);
-```
-
-The address is only a deterministic visual seed. Five compositions, eight palettes, localized grid regions and variable density provide recognizable variation without exposing secret material. The portrait contains no ownership proof, name, initial, central identity mark, or circular node overlay.
-
 The current `0.x` line is a public preview. The `next` channel can be selected
 explicitly with `npm install @myria-network/observer@next`.
 
 Node.js 24.14.0 is required for the packaged runtime integration. Browser applications only use the client bundle. A complete Observer process requires a compatible protocol engine adapter.
 
+The official adapter is currently consumed from the MYRIA source workspace as `test-myria/observer`; it is not bundled with the `@myria-network/observer` npm package. Client-only applications do not need the engine.
+
 ## Run a community Observer
 
 ```js
 import {createCommunityObserver} from '@myria-network/observer';
-import * as engine from './myria-protocol-engine.js';
+import * as engine from 'test-myria/observer';
 
 const observer = await createCommunityObserver({
   home: './myria-observer-data',

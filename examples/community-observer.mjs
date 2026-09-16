@@ -1,5 +1,5 @@
 import {createCommunityObserver} from '@myria-network/observer';
-import * as engine from '@your-org/myria-protocol-engine';
+import * as engine from 'test-myria/observer';
 
 const observer=await createCommunityObserver({
   home:process.env.MYRIA_OBSERVER_HOME??'./myria-community-observer',

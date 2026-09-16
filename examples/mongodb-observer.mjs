@@ -4,7 +4,7 @@ import {
   createMongoObserverDatabase,
   ObserverProjectionWorker,
 } from '@myria-network/observer';
-import * as engine from '@your-org/myria-protocol-engine';
+import * as engine from 'test-myria/observer';
 
 if(!process.env.MONGODB_URI)throw new Error('MONGODB_URI_REQUIRED');
 
