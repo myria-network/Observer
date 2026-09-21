@@ -12,6 +12,16 @@ import {
 const objectId='ab'.repeat(32),wallet='myr_w_'+'a'.repeat(52);
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
 
+test('public Observer pins portable crypto and the supported dApp SDK line',async()=>{
+  const pkg=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));
+  assert.equal(pkg.dependencies['@noble/hashes'],'2.0.1');
+  assert.equal(pkg.dependencies['@myria-network/dapp'],'^0.3.0');
+  for(const file of ['index.js','token-avatar.js','wallet-avatar.js']){
+    const source=await readFile(new URL(`../src/${file}`,import.meta.url),'utf8');
+    assert.doesNotMatch(source,/node:crypto|crypto\.subtle|\/webcrypto\.js|\bKeyObject\b/);
+  }
+});
+
 test('client exposes every Observer catalog through one bounded POST endpoint',async()=>{
   const calls=[];
   const client=createMyriaObserverClient({url:'https://observer.example',fetch:async(url,init)=>{
