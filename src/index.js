@@ -4,7 +4,7 @@ export {classifyObservedRecord,observedObjectType,observedAssetId,isObservedToke
 const ID=/^[a-zA-Z0-9_-]{1,128}$/;
 const POST_ID=/^[0-9]{1,19}$/;
 const MODULES=['overview','stats','status','assets','carriers','activity','research','live-spores','timeline','spores','transfers','transaction-gallery','wallet-gallery','social-media','contracts','objects','collections','catalogs','propagations','discoveries','routes','health/scarce','propagators','scouts','graph','wallet'];
-const PARAMS=new Set(['limit','offset','q','status','target','range','root','depth','nodes','type','health','address']);
+const PARAMS=new Set(['limit','offset','q','status','target','range','root','depth','nodes','type','health','address','asset']);
 const FORBIDDEN_KEYS=new Set(['__proto__','prototype','constructor']);
 const MAX_RESPONSE_CHARS=4*1024*1024;
 
