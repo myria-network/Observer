@@ -1,6 +1,6 @@
 {
   "name": "@myria-network/observer",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Read-only MYRIA Observer SDK, catalog client and database projection adapters",
   "type": "module",
   "sideEffects": false,
@@ -22,6 +22,10 @@
     "./wallet-avatar": {
       "types": "./dist/wallet-avatar.d.ts",
       "import": "./dist/wallet-avatar.js"
+    },
+    "./record": {
+      "types": "./dist/record.d.ts",
+      "import": "./dist/record.js"
     }
   },
   "files": [

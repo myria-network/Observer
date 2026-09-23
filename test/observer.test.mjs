@@ -7,10 +7,22 @@ import {
   createMyriaObserverClient,createCommunityObserver,OBSERVER_MODULES,MyriaObserverError,
   OBSERVER_DATABASE_BLUEPRINT,ObserverProjectionWorker,observerDatabaseNames,
   createMongoObserverDatabase,createPostgresObserverDatabase,createMysqlObserverDatabase,createMariaDbObserverDatabase,
+  classifyObservedRecord,isObservedToken,isObservedTransfer,isObservedSwap,observedAssetId,observedObjectType,
 } from '../src/index.js';
 
 const objectId='ab'.repeat(32),wallet='myr_w_'+'a'.repeat(52);
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
+
+test('semantic helpers classify tokens, transfers and swaps consistently',()=>{
+  const tokenId='cd'.repeat(32);
+  assert.equal(classifyObservedRecord({data:{objectType:'TX',operation:'TRANSFER',transaction:{assetId:objectId}},__observer:{networkId:objectId}}).kind,'TRANSFER');
+  assert.equal(classifyObservedRecord({data:{objectType:'TX',operation:'TRANSFER',transaction:{assetId:tokenId}},__observer:{networkId:objectId}}).kind,'TOKEN_TRANSFER');
+  assert.equal(isObservedToken({data:{objectType:'TOKEN_DEFINITION',assetId:tokenId}}),true);
+  assert.equal(isObservedTransfer({data:{objectType:'TX',operation:'TRANSFER'}}),true);
+  assert.equal(isObservedSwap({data:{objectType:'TX',operation:'AMM_SWAP'}}),true);
+  assert.equal(observedAssetId({data:{transaction:{assetId:tokenId}}}),tokenId);
+  assert.equal(observedObjectType({data:{objectType:'TOKEN_DEFINITION'}}),'TOKEN_DEFINITION');
+});
 
 test('public Observer pins portable crypto and the supported dApp SDK line',async()=>{
   const pkg=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));

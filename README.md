@@ -2,6 +2,12 @@
 
 JavaScript library for running an autonomous, read-only community Observer and consuming its views through a single catalog API.
 
+The SDK also exports `classifyObservedRecord`, `isObservedToken`,
+`isObservedTransfer`, `isObservedSwap`, `observedAssetId`, and
+`observedObjectType` so every consumer can distinguish native transfers,
+custom-token transfers, swaps, liquidity operations, tokens, and contract
+objects without duplicating Observer classification rules.
+
 ## Documentation
 
 | Guide | Use it for |

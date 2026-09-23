@@ -1,4 +1,6 @@
 export type HexId=string;
+export {classifyObservedRecord,observedObjectType,observedAssetId,isObservedToken,isObservedTransfer,isObservedSwap} from './record.js';
+export type {ObservedRecordKind,ObservedObjectClassification} from './record.js';
 export type AtomicUnits=string;
 export type TimestampMs=number;
 export type CatalogModule='overview'|'stats'|'status'|'assets'|'carriers'|'activity'|'research'|'live-spores'|'timeline'|'spores'|'transfers'|'transaction-gallery'|'wallet-gallery'|'social-media'|'contracts'|'objects'|'collections'|'catalogs'|'propagations'|'discoveries'|'routes'|'health/scarce'|'propagators'|'scouts'|'graph'|'wallet';

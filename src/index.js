@@ -1,4 +1,5 @@
 import {io as createSocket} from 'socket.io-client';
+export {classifyObservedRecord,observedObjectType,observedAssetId,isObservedToken,isObservedTransfer,isObservedSwap} from './record.js';
 
 const ID=/^[a-zA-Z0-9_-]{1,128}$/;
 const POST_ID=/^[0-9]{1,19}$/;

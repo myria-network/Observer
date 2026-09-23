@@ -28,6 +28,41 @@ See [DATA_MODEL.md](./DATA_MODEL.md) for the complete response structures and re
 | `walletAvatar(address)` | Produces deterministic, platform-neutral Pixel Blast instructions for a wallet portrait. |
 | `walletAvatarRgba(address, resolution?)` | Rasterizes the portrait into square RGBA bytes at a resolution from 300 to 1024 pixels. |
 
+## Semantic object classification
+
+The SDK exports one shared vocabulary for community Observers, external indexes,
+and user interfaces:
+
+```js
+import {
+  classifyObservedRecord,
+  isObservedToken,
+  isObservedTransfer,
+  isObservedSwap,
+  observedAssetId,
+  observedObjectType,
+} from '@myria-network/observer';
+
+classifyObservedRecord({
+  objectType: 'TX',
+  operation: 'TRANSFER',
+  networkId,
+  assetId,
+}); // kind: 'TRANSFER' or 'TOKEN_TRANSFER'
+```
+
+- `classifyObservedRecord` returns the shared semantic kind and boolean flags.
+- `isObservedToken`, `isObservedTransfer`, and `isObservedSwap` are focused predicates.
+- `observedAssetId` and `observedObjectType` read normalized identifiers from
+  both list records and detail DTOs.
+
+These helpers classify data already returned by an Observer. They do not claim
+economic acceptance; that remains a verified-ledger decision.
+
+Public kinds include `TOKEN`, `TRANSFER`, `TOKEN_TRANSFER`, `SWAP`,
+`LIQUIDITY`, `TOKEN_CREATION`, `CONTRACT_DEPLOYMENT`, and
+`CONTRACT_EXECUTION`, in addition to structural network objects.
+
 ## Client
 
 ```js
