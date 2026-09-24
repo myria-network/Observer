@@ -3,4 +3,4 @@ export {
   tokenInitial,
   drawTokenAvatar,
   tokenAvatarPng,
-} from '@myria-network/dapp';
+} from '@myria-network/core';

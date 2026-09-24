@@ -4,10 +4,10 @@ export type {
   TokenAvatarFragment,
   TokenAvatarOptions,
   TokenAvatarPixel,
-} from '@myria-network/dapp';
+} from '@myria-network/core';
 export {
   tokenAvatarArt,
   tokenInitial,
   drawTokenAvatar,
   tokenAvatarPng,
-} from '@myria-network/dapp';
+} from '@myria-network/core';

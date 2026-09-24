@@ -24,10 +24,10 @@ test('semantic helpers classify tokens, transfers and swaps consistently',()=>{
   assert.equal(observedObjectType({data:{objectType:'TOKEN_DEFINITION'}}),'TOKEN_DEFINITION');
 });
 
-test('public Observer pins portable crypto and the supported dApp SDK line',async()=>{
+test('public Observer pins portable crypto and the shared core avatar SDK',async()=>{
   const pkg=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));
   assert.equal(pkg.dependencies['@noble/hashes'],'2.0.1');
-  assert.equal(pkg.dependencies['@myria-network/dapp'],'^0.3.0');
+  assert.equal(pkg.dependencies['@myria-network/core'],'^0.1.0');
   for(const file of ['index.js','token-avatar.js','wallet-avatar.js']){
     const source=await readFile(new URL(`../src/${file}`,import.meta.url),'utf8');
     assert.doesNotMatch(source,/node:crypto|crypto\.subtle|\/webcrypto\.js|\bKeyObject\b/);

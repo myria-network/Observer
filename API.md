@@ -268,11 +268,11 @@ The optional `token-avatar` export lets community frontends render the same visu
 ```js
 import {tokenAvatarPng} from '@myria-network/observer/token-avatar';
 
-const image = tokenAvatarPng(asset.assetId, asset.symbol, asset.name);
+const image = tokenAvatarPng(asset.assetId, asset.symbol, asset.name, verifiedNetworkId);
 document.querySelector('img').src = image;
 ```
 
-`tokenAvatarArt()` is platform-neutral. Browser applications can use `drawTokenAvatar()` or `tokenAvatarPng()`. MYR and TMYR always use a violet palette and the letter `M`.
+These functions re-export the browser-safe `@myria-network/core` implementation. `tokenAvatarArt()` is platform-neutral. Browser applications can use `drawTokenAvatar()` or `tokenAvatarPng()`. The violet palette belongs only to the asset whose verified AssetID equals `verifiedNetworkId`, not to an unverified name or symbol; art is not an authenticity proof.
 
 ### Deterministic wallet portraits
 

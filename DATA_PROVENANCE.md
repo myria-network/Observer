@@ -56,7 +56,7 @@ A local wallet bridge may notify the Observer about public signed activity. Thos
 
 A spore is obtained from a discovery frame, a verified carrier route, a bundle slice, an imported discovery capsule, or a verified MetaSpore hint.
 
-MetaSpore text keeps the public `MYR1` marker. The protocol engine accepts both the ordinary `MYR1:<payload>` representation and the bounded compact `MYR1:B:<payload>` codec through the same canonical decoder.
+MetaSpore text uses one public representation: `MYR1:<payload>`, where payload is the canonical CBOR envelope encoded as unpadded Base64URL. The shared protocol decoder rejects alternate text codecs.
 
 A `.myrp` SporePack is transport, not authority. Before exposing a contained spore as valid, the engine bounds the package, verifies its magic, version, canonical index, offsets, lengths, entry hashes, expected `PackID`, active `NetworkID`, and announced root spore. It then extracts the exact entry bytes and runs the complete ordinary spore-admission pipeline. A PackID, package URL, byte range, or hint alone never creates a verified spore or logical graph node.
 
