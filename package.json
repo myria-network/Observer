@@ -1,6 +1,6 @@
 {
   "name": "@myria-network/observer",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Read-only MYRIA Observer SDK, catalog client and database projection adapters",
   "type": "module",
   "sideEffects": false,

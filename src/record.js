@@ -27,7 +27,8 @@ export function classifyObservedRecord(record){
   else if(objectType==='DEMO_RECORD')kind='RECORD';
   else if(isTransfer)kind=assetId&&networkId&&!isNativeAsset?'TOKEN_TRANSFER':'TRANSFER';
   else if(isSwap)kind='SWAP';
-  else if(isTransaction&&['AMM_ADD_LIQUIDITY','AMM_REMOVE_LIQUIDITY'].includes(operation))kind='LIQUIDITY';
+  else if(isTransaction&&operation==='AMM_ADD_LIQUIDITY')kind='ADD_LIQUIDITY';
+  else if(isTransaction&&operation==='AMM_REMOVE_LIQUIDITY')kind='REMOVE_LIQUIDITY';
   else if(isTransaction&&['TOKEN_CREATE','TOKEN_WITH_LP'].includes(operation))kind='TOKEN_CREATION';
   else if(isTransaction&&operation==='DEPLOY')kind='CONTRACT_DEPLOYMENT';
   else if(isTransaction&&['INVOKE','INVOKE_COMMIT','INVOKE_SETTLE'].includes(operation))kind='CONTRACT_EXECUTION';

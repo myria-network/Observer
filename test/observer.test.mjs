@@ -24,6 +24,14 @@ test('semantic helpers classify tokens, transfers and swaps consistently',()=>{
   assert.equal(observedObjectType({data:{objectType:'TOKEN_DEFINITION'}}),'TOKEN_DEFINITION');
 });
 
+test('verified AMM liquidity operations have distinct semantic kinds',()=>{
+  const add={data:{objectType:'TX',operation:'AMM_ADD_LIQUIDITY'}};
+  const remove={data:{objectType:'TX',operation:'AMM_REMOVE_LIQUIDITY'}};
+  assert.equal(classifyObservedRecord(add).kind,'ADD_LIQUIDITY');
+  assert.equal(classifyObservedRecord(remove).kind,'REMOVE_LIQUIDITY');
+  assert.equal(classifyObservedRecord({data:{objectType:'TX',operation:'AMM_SWAP'}}).kind,'SWAP');
+});
+
 test('public Observer pins portable crypto and the shared core avatar SDK',async()=>{
   const pkg=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));
   assert.equal(pkg.dependencies['@noble/hashes'],'2.0.1');

@@ -60,7 +60,7 @@ These helpers classify data already returned by an Observer. They do not claim
 economic acceptance; that remains a verified-ledger decision.
 
 Public kinds include `TOKEN`, `TRANSFER`, `TOKEN_TRANSFER`, `SWAP`,
-`LIQUIDITY`, `TOKEN_CREATION`, `CONTRACT_DEPLOYMENT`, and
+`ADD_LIQUIDITY`, `REMOVE_LIQUIDITY`, `TOKEN_CREATION`, `CONTRACT_DEPLOYMENT`, and
 `CONTRACT_EXECUTION`, in addition to structural network objects.
 
 ## Client
